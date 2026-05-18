@@ -1,0 +1,35 @@
+import express from 'express'
+import dotenv from 'dotenv'
+import { QueryTypes, Sequelize } from 'sequelize'
+
+dotenv.config()
+
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
+})
+
+const main = async () => {
+  try {
+    await sequelize.authenticate()
+    console.log('Connection has been established successfully')
+    const blogs = await sequelize.query('SELECT * FROM blogs', {
+      type: QueryTypes.SELECT,
+    })
+
+    if (blogs) {
+      blogs.map((blog) => console.log(`${blog.author}: '${blog.title}', ${blog.likes} likes`))
+    }
+
+    sequelize.close()
+  } catch (error) {
+    console.error('Unable to connect to the database', error)
+  }
+}
+
+main()
