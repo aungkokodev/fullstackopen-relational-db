@@ -27,6 +27,16 @@ router.get('/:id', findBlog, async (req, res) => {
   res.json(req.blog)
 })
 
+router.put('/:id', findBlog, async (req, res) => {
+  try {
+    req.blog.likes = req.body.likes
+    await req.blog.save()
+    res.json(req.blog)
+  } catch (error) {
+    res.status(400).json({ error })
+  }
+})
+
 router.delete('/:id', findBlog, async (req, res) => {
   await req.blog.destroy()
   res.status(204).end()
