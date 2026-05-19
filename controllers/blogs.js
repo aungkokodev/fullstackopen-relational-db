@@ -15,12 +15,8 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  try {
-    const blog = await Blog.create({ ...req.body })
-    res.status(201).json(blog)
-  } catch (error) {
-    res.status(400).json({ error })
-  }
+  const blog = await Blog.create({ ...req.body })
+  res.status(201).json(blog)
 })
 
 router.get('/:id', findBlog, async (req, res) => {
@@ -28,18 +24,30 @@ router.get('/:id', findBlog, async (req, res) => {
 })
 
 router.put('/:id', findBlog, async (req, res) => {
-  try {
-    req.blog.likes = req.body.likes
-    await req.blog.save()
-    res.json(req.blog)
-  } catch (error) {
-    res.status(400).json({ error })
-  }
+  req.blog.likes = req.body.likes
+  await req.blog.save()
+  res.json(req.blog)
 })
 
 router.delete('/:id', findBlog, async (req, res) => {
   await req.blog.destroy()
   res.status(204).end()
 })
+
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message)
+
+  if (error.name === 'SequelizeValidationError') {
+    return res.status(400).json({ error: error.errors.map((e) => e.message) })
+  }
+
+  if (error.name === 'SequelizeDatabaseError') {
+    return res.status(400).json({ error: 'malformatted id or invalid database query' })
+  }
+
+  next(error)
+}
+
+router.use(errorHandler)
 
 module.exports = router
