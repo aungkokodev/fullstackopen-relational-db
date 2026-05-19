@@ -1,8 +1,5 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import { QueryTypes, Sequelize } from 'sequelize'
-
-dotenv.config()
+require('dotenv').config()
+const { QueryTypes, Sequelize } = require('sequelize')
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
