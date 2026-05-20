@@ -4,7 +4,7 @@ const { Blog } = require('../models')
 const findBlog = async (req, res, next) => {
   req.blog = await Blog.findByPk(req.params.id)
   if (!req.blog) {
-    return res.status(404).end()
+    return res.status(404).json({ error: 'blog not found' })
   }
   next()
 }
@@ -33,21 +33,5 @@ router.delete('/:id', findBlog, async (req, res) => {
   await req.blog.destroy()
   res.status(204).end()
 })
-
-const errorHandler = (error, req, res, next) => {
-  console.error(error.message)
-
-  if (error.name === 'SequelizeValidationError') {
-    return res.status(400).json({ error: error.errors.map((e) => e.message) })
-  }
-
-  if (error.name === 'SequelizeDatabaseError') {
-    return res.status(400).json({ error: 'malformatted id or invalid database query' })
-  }
-
-  next(error)
-}
-
-router.use(errorHandler)
 
 module.exports = router
