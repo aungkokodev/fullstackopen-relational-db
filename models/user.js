@@ -28,7 +28,7 @@ User.init(
           msg: 'username must be a valid email',
         },
         notNull: {
-          msg: 'username must not be empty',
+          msg: 'username is required',
         },
       },
     },
@@ -37,7 +37,7 @@ User.init(
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'password must not be empty',
+          msg: 'password is required',
         },
       },
     },
@@ -46,7 +46,7 @@ User.init(
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'name must not be empty',
+          msg: 'name is required',
         },
       },
     },
