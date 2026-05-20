@@ -22,14 +22,33 @@ User.init(
       type: DataTypes.STRING,
       unique: true,
       allowNull: false,
+      validate: {
+        isEmail: {
+          args: true,
+          msg: 'username must be a valid email',
+        },
+        notNull: {
+          msg: 'username must not be empty',
+        },
+      },
     },
     passwordHash: {
       type: DataTypes.STRING(60),
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'password must not be empty',
+        },
+      },
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'name must not be empty',
+        },
+      },
     },
   },
   {
