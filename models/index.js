@@ -16,4 +16,5 @@ ReadingList.belongsTo(Blog)
 module.exports = {
   Blog,
   User,
+  ReadingList,
 }

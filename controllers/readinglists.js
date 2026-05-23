@@ -1,7 +1,7 @@
-const { User, Blog } = require('../models')
-const ReadingList = require('../models/readinglist')
-
 const router = require('express').Router()
+const { User, Blog, ReadingList } = require('../models')
+const { extractToken } = require('../middlewares')
+const { Op } = require('sequelize')
 
 router.post('/', async (req, res) => {
   const { userId, blogId } = req.body
@@ -16,6 +16,22 @@ router.post('/', async (req, res) => {
   const readinglist = await ReadingList.create({ userId, blogId })
 
   res.status(201).json(readinglist)
+})
+
+router.put('/:id', extractToken, async (req, res) => {
+  const readinglist = await ReadingList.findOne({
+    where: {
+      [Op.and]: [{ userId: req.decodedToken.id }, { blogId: req.params.id }],
+    },
+  })
+
+  if (!readinglist)
+    return res.status(404).json({ error: 'blog does not exist in the user reading list' })
+
+  readinglist.read = req.body.read || false
+  await readinglist.save()
+
+  res.json(readinglist)
 })
 
 module.exports = router
