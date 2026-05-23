@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize')
+const { sequelize } = require('../util/db')
 
 module.exports = {
   up: async ({ context: queryInterface }) => {
@@ -26,8 +27,17 @@ module.exports = {
       },
       read: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
         defaultValue: false,
+      },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: sequelize.fn('NOW'),
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: sequelize.fn('NOW'),
       },
     })
   },

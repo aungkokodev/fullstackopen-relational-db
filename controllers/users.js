@@ -2,6 +2,7 @@ const router = require('express').Router()
 const { User, Blog } = require('../models')
 
 const bcrypt = require('bcrypt')
+const ReadingList = require('../models/readinglist')
 
 router.get('/', async (req, res) => {
   const users = await User.findAll({
@@ -28,6 +29,19 @@ router.get('/:username', async (req, res) => {
   const user = await User.findOne({
     where: {
       username: req.params.username,
+    },
+    attributes: {
+      exclude: ['id'],
+    },
+    include: {
+      model: Blog,
+      as: 'readings',
+      through: {
+        attributes: [],
+      },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'userId'],
+      },
     },
   })
 
