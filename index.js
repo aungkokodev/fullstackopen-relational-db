@@ -9,6 +9,7 @@ const loginRouter = require('./controllers/login')
 const authorsRouter = require('./controllers/authors')
 const testsRouter = require('./controllers/tests')
 const readinglistsRouter = require('./controllers/readinglists')
+const logoutRouter = require('./controllers/logout')
 
 const app = express()
 
@@ -19,6 +20,7 @@ app.use('/api/login', loginRouter)
 app.use('/api/authors', authorsRouter)
 app.use('/', testsRouter)
 app.use('/api/readinglists', readinglistsRouter)
+app.use('/api/logout', logoutRouter)
 
 const errorHandler = (error, req, res, next) => {
   console.log('----------Error----------')
@@ -34,6 +36,8 @@ const errorHandler = (error, req, res, next) => {
     return res.status(400).json({ error: 'malformatted id or invalid database query' })
   } else if (error.name === 'JsonWebTokenError') {
     return res.status(401).json({ error: 'invalid token' })
+  } else if (error.name === 'TokenExpiredError') {
+    return res.status(401).json({ error: 'token expired' })
   }
 
   return res.status(500).json({ error: 'an internal server error occurred' })
