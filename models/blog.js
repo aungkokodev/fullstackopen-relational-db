@@ -36,7 +36,7 @@ Blog.init(
       defaultValue: 0,
     },
     year: {
-      type: DataTypes.INTEGER(4),
+      type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         isValidYear(value) {
