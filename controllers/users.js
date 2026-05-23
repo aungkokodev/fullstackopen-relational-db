@@ -1,18 +1,16 @@
 const router = require('express').Router()
-const { User, Blog } = require('../models')
-
 const bcrypt = require('bcrypt')
-const ReadingList = require('../models/readinglist')
 const { Op } = require('sequelize')
+const { User, Blog, ReadingList } = require('../models')
 
 router.get('/', async (req, res) => {
   const users = await User.findAll({
     include: {
       model: Blog,
       attributes: {
-        exclude: ['userId'],
-      },
-    },
+        exclude: ['userId']
+      }
+    }
   })
   res.json(users)
 })
@@ -38,23 +36,20 @@ router.get('/:id', async (req, res) => {
     //   username: req.params.username,
     // },
     attributes: {
-      exclude: ['id'],
+      exclude: ['id']
     },
     include: {
       model: Blog,
       as: 'readings',
       attributes: {
-        exclude: ['createdAt', 'updatedAt', 'userId'],
+        exclude: ['createdAt', 'updatedAt', 'userId']
       },
       through: {
-        attributes: [],
-        where,
-      },
-      include: {
-        model: ReadingList,
+        as: 'reading_list',
         attributes: ['id', 'read'],
-      },
-    },
+        where
+      }
+    }
   })
 
   if (user) {

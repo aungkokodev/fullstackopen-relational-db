@@ -10,7 +10,6 @@ const extractToken = async (req, res, next) => {
     const decodedToken = jwt.verify(token, SECRET)
 
     const session = await Session.findOne({ where: { token } })
-
     if (!session) {
       return res.status(401).json({ error: 'session expired or logged out' })
     }
@@ -30,5 +29,5 @@ const extractToken = async (req, res, next) => {
 }
 
 module.exports = {
-  extractToken,
+  extractToken
 }

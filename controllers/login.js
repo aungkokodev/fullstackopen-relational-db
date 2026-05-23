@@ -1,7 +1,7 @@
 const router = require('express').Router()
-const { User, Session } = require('../models')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { User, Session } = require('../models')
 const { SECRET } = require('../util/config')
 
 router.post('/', async (req, res) => {
@@ -13,8 +13,8 @@ router.post('/', async (req, res) => {
 
   const user = await User.findOne({
     where: {
-      username,
-    },
+      username
+    }
   })
 
   const passwordCorrect = user && (await bcrypt.compare(password, user.passwordHash))
@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
     return res.status(403).json({ error: 'your account has been disabled' })
   }
 
-  const payload = { id: user.id, username: user.username }
+  const payload = { id: user.id, username: user.username, name: user.name }
   const token = jwt.sign(payload, SECRET, { expiresIn: 60 * 2 })
 
   await Session.create({ userId: user.id, token })
