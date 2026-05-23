@@ -3,6 +3,7 @@ const { User, Blog } = require('../models')
 
 const bcrypt = require('bcrypt')
 const ReadingList = require('../models/readinglist')
+const { Op } = require('sequelize')
 
 router.get('/', async (req, res) => {
   const users = await User.findAll({
@@ -25,11 +26,17 @@ router.post('/', async (req, res) => {
   res.status(201).json(user)
 })
 
-router.get('/:username', async (req, res) => {
-  const user = await User.findOne({
-    where: {
-      username: req.params.username,
-    },
+router.get('/:id', async (req, res) => {
+  let where = {}
+
+  if (req.query.read === 'true' || req.query.read === 'false') {
+    where = { read: req.query.read }
+  }
+
+  const user = await User.findByPk(req.params.id, {
+    // where: {
+    //   username: req.params.username,
+    // },
     attributes: {
       exclude: ['id'],
     },
@@ -41,6 +48,7 @@ router.get('/:username', async (req, res) => {
       },
       through: {
         attributes: [],
+        where,
       },
       include: {
         model: ReadingList,
